@@ -7,7 +7,7 @@ from geekshop.settings import BASE_DIR
 
 
 def read_json_orders(filename):
-    with open(filename, 'r') as json_file:
+    with open(filename, 'r', encoding='utf-8') as json_file:
         json_data = json.load(json_file)
     return json_data
 
