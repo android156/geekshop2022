@@ -6,11 +6,13 @@ from django.shortcuts import render
 from geekshop.settings import BASE_DIR
 from django.conf import settings
 
+from products.models import Product
 
-def read_json_orders(filename):
-    with open(filename, 'r', encoding='utf-8') as json_file:
-        json_data = json.load(json_file)
-    return json_data
+
+# def read_json_orders(filename):
+#     with open(filename, 'r', encoding='utf-8') as json_file:
+#         json_data = json.load(json_file)
+#     return json_data
 
 
 def index(request):
@@ -23,6 +25,6 @@ def index(request):
 def products(request):
     context = {
         "title": "Geekshop Продукты",
-        "products": read_json_orders(settings.BASE_DIR / 'products/fixtures/products.json')
+        "products": Product.objects.all()
     }
     return render(request, 'products/products.html', context)
