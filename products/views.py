@@ -9,10 +9,10 @@ from django.conf import settings
 from products.models import Product
 
 
-# def read_json_orders(filename):
-#     with open(filename, 'r', encoding='utf-8') as json_file:
-#         json_data = json.load(json_file)
-#     return json_data
+def read_json_orders(filename):
+    with open(filename, 'r', encoding='utf-8') as json_file:
+        json_data = json.load(json_file)
+    return json_data
 
 
 def index(request):
