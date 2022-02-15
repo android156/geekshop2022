@@ -6,7 +6,7 @@ from django.shortcuts import render
 from geekshop.settings import BASE_DIR
 from django.conf import settings
 
-from products.models import Product
+from products.models import Product, ProductCategory
 
 
 def read_json_orders(filename):
@@ -25,6 +25,7 @@ def index(request):
 def products(request):
     context = {
         "title": "Geekshop Продукты",
-        "products": Product.objects.all()
+        "products": Product.objects.all(),
+        "categories": ProductCategory.objects.all()
     }
     return render(request, 'products/products.html', context)
