@@ -4,6 +4,9 @@ from django.shortcuts import render
 
 # Create your views here.
 from geekshop.settings import BASE_DIR
+from django.conf import settings
+
+from products.models import Product
 
 
 def read_json_orders(filename):
@@ -22,6 +25,6 @@ def index(request):
 def products(request):
     context = {
         "title": "Geekshop Продукты",
-        "products": read_json_orders(BASE_DIR / 'products/fixtures/products.json')
+        "products": Product.objects.all()
     }
     return render(request, 'products/products.html', context)
