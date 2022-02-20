@@ -3,7 +3,8 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
-from users.forms import UserLoginForm
+from users.forms import UserLoginForm, UserRegistrationForm
+
 
 # Create your views here.
 
@@ -17,6 +18,8 @@ def login(request):
             if user and user.is_active:
                 auth.login(request, user)
                 return HttpResponseRedirect(reverse('index'))
+        else:
+            print(form.errors)
     else:
         form = UserLoginForm()
     context = {
@@ -27,8 +30,18 @@ def login(request):
 
 
 def register(request):
+    if request.method == 'POST':
+        form = UserRegistrationForm(data=request.POST)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('users:login'))
+        else:
+            print(form.errors)
+    else:
+        form = UserRegistrationForm()
+
     context = {
         "title": "GeekShop - Регистрация",
-
+        'form': form
     }
     return render(request, 'users/register.html', context)
