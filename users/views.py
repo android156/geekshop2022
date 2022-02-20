@@ -45,3 +45,8 @@ def register(request):
         'form': form
     }
     return render(request, 'users/register.html', context)
+
+
+def logout(request):
+    auth.logout(request)
+    return HttpResponseRedirect(reverse('index'))
