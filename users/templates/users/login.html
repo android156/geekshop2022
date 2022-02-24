@@ -5,18 +5,28 @@
             <div class="container">
                 <div class="row justify-content-center">
                     <div class="col-lg-5">
-                        {% if not form.errors %}
+                        {% if form.errors or messages %}
+                            <div class="alert {% if messages %}
+                                                    alert-success
+                                              {% else %}
+                                                    alert-danger
+                                              {% endif %}
+                                        alert-dismissible fade show" role="alert" style="margin-top: 50px;">
+                                {% if messages %}
+                                    {% for message in messages %}
+                                        {{ message }}
+                                    {% endfor %}
+                                {% else %}
+                                    {{ form.non_field_errors }}
+                                {% endif %}
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                        {% else %}
                             <div class="alert alert-warning alert-dismissible fade show" role="alert"
                              style="margin-top: 50px;">
                             <strong>Holy guacamole!</strong> You should check in on some of those fields below.
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        {% else %}
-                            <div class="alert alert-danger alert-dismissible fade show" role="alert"
-                             style="margin-top: 50px;">
-                            {{ form.non_field_errors }}
                             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
