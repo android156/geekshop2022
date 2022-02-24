@@ -19,12 +19,12 @@ def login(request):
                 auth.login(request, user)
                 return HttpResponseRedirect(reverse('index'))
         else:
-            print(form.errors)
+            print(form.non_field_errors())
     else:
         form = UserLoginForm()
     context = {
         "title": "GeekShop - Авторизация",
-        "form": UserLoginForm,
+        "form": form,
     }
     return render(request, 'users/login.html', context)
 

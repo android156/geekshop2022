@@ -21,7 +21,7 @@ from django.urls import path, include
 from products.views import index
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('admin/', admin.site.urls),  # todo: тут почему-то нельзя написать name='admin' и в шаблоне применить {% url %}
     path('', index, name='index'),
     path('products/', include('products.urls', namespace='products')),
     path('users/', include('users.urls', namespace='users')),
