@@ -8,6 +8,7 @@
                 <div class="card-body">
                     <h5 class="card-title">{{ basket.product.name }}</h5>
                     <p class="card-text">{{ basket.product.description }}</p>
+                    <p class="card-text">Цена {{ basket.product.price }} за шт.</p>
                 </div>
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item bg-light">
@@ -30,7 +31,7 @@
         <div class="card mb-3">
             <div class="card-footer">
                 <p class="float-left">Итого</p>
-                <h4 class="float-right">Всего руб.</h4>
+                <h4 class="float-right">{{ baskets.0.total_price }} руб.</h4>
             </div>
         </div>
         <a class="btn btn-success btn-lg float-right" href="../orders/checkout_order.html">
