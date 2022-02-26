@@ -54,9 +54,22 @@ def logout(request):
 
 
 def profile(request):
-    form = UserProfileForm(instance=request.user)
+    current_user = request.user
+    if request.method == 'POST':
+        form = UserProfileForm(instance=current_user, files=request.FILES, data=request.POST)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('users:profile'))
+    else:
+        form = UserProfileForm(instance=current_user)
     context = {
-        'title': "GeekShop - Профиль пользователя",
+        'title': 'GeekShop - Профиль пользователя',
         'form': form,
+
     }
     return render(request, 'users/profile.html', context)
+
+
+def logout(request):
+    auth.logout(request)
+    return HttpResponseRedirect(reverse('index'))
