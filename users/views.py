@@ -1,9 +1,10 @@
-from django.contrib import auth
+from django.contrib import auth, messages
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
-from users.forms import UserLoginForm, UserRegistrationForm
+from baskets.models import Basket
+from users.forms import UserLoginForm, UserRegistrationForm, UserProfileForm
 
 
 # Create your views here.
@@ -19,12 +20,12 @@ def login(request):
                 auth.login(request, user)
                 return HttpResponseRedirect(reverse('index'))
         else:
-            print(form.errors)
+            print(form.non_field_errors())
     else:
         form = UserLoginForm()
     context = {
         "title": "GeekShop - Авторизация",
-        "form": UserLoginForm,
+        "form": form,
     }
     return render(request, 'users/login.html', context)
 
@@ -34,6 +35,7 @@ def register(request):
         form = UserRegistrationForm(data=request.POST)
         if form.is_valid():
             form.save()
+            messages.success(request, 'Регистрация прошла успешно!!!')
             return HttpResponseRedirect(reverse('users:login'))
         else:
             print(form.errors)
@@ -45,6 +47,28 @@ def register(request):
         'form': form
     }
     return render(request, 'users/register.html', context)
+
+
+def logout(request):
+    auth.logout(request)
+    return HttpResponseRedirect(reverse('index'))
+
+
+def profile(request):
+    current_user = request.user
+    if request.method == 'POST':
+        form = UserProfileForm(instance=current_user, files=request.FILES, data=request.POST)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('users:profile'))
+    else:
+        form = UserProfileForm(instance=current_user)
+    context = {
+        'title': 'GeekShop - Профиль пользователя',
+        'form': form,
+        'baskets': Basket.objects.filter(user=current_user),
+    }
+    return render(request, 'users/profile.html', context)
 
 
 def logout(request):
