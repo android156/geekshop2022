@@ -5,7 +5,7 @@ from products.models import ProductCategory, Product
 from users.models import User
 
 
-admin.site.register(User)
+# admin.site.register(User)
 
 
 @admin.register(Product)
