@@ -135,3 +135,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Переопределяем модель пользователя на наш вариант, который наследуется от AbstractUser
 
 AUTH_USER_MODEL = 'users.User'
+
+LOGIN_URL = '/users/login/'
