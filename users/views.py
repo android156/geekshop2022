@@ -10,6 +10,7 @@ from users.models import User
 
 # Create your views here.
 
+
 def login(request):
     if request.method == 'POST':
         form = UserLoginForm(data=request.POST)
@@ -32,12 +33,20 @@ def login(request):
 
 
 def register(request):
+
+    def send_verify_mail(user):
+        verify_link = reverse('users:verify', args=[user.email, user.activation_key])
+        title = f'Подтверждение учетной записи {user.username}'
+        message = f'''Для подтверждения учетной записи {user.username} 
+        на портале {settings.DOMAIN_NAME} перейдите по ссылке: \n{settings.DOMAIN_NAME}{verify_link}'''
+        return send_mail(title, message, settings.EMAIL_HOST_USER, [user.email], fail_silently=False)
+
     if request.method == 'POST':
         form = UserRegistrationForm(data=request.POST)
         current_user = request.user
         if form.is_valid():
-            form.save()
-            if send_verify_mail(current_user):
+            user = form.save()
+            if send_verify_mail(user):
                 messages.success(request, 'Сообщение подтверждения отправлено')
                 print('Сообщение подтверждения отправлено')
                 return HttpResponseRedirect(reverse('users:login'))
@@ -57,14 +66,6 @@ def register(request):
         'form': form
     }
     return render(request, 'users/register.html', context)
-
-
-def send_verify_mail(user):
-    verify_link = reverse('auth:verify', args=[user.email, user.activation_key])
-    title = f'Подтверждение учетной записи {user.username}'
-    message = f'''Для подтверждения учетной записи {user.username} 
-    на портале {settings.DOMAIN_NAME} перейдите по ссылке: \n{settings.DOMAIN_NAME}{verify_link}'''
-    return send_mail(title, message, settings.EMAIL_HOST_USER, [user.email], fail_silently=False)
 
 
 def verify(request, email, activation_key):
