@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 from os import path
 from pathlib import Path
+import os, json
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 
@@ -36,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'social_django',  # Для социалки
 
     'products',
     'users',
@@ -147,3 +149,17 @@ EMAIL_HOST_USER = 'django_mail_sender@mail.ru'
 EMAIL_HOST_PASSWORD = 'KUqPtBdkNgbSdyGnRnMN'
 EMAIL_USE_SSL = True
 # EMAIL_USE_TLS = True
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'social_core.backends.vk.VKOAuth2',
+)
+
+with open('geekshop/vk.json', 'r') as f:
+    VK = json.load(f)
+SOCIAL_AUTH_VK_OAUTH2_KEY = VK['SOCIAL_AUTH_VK_OAUTH2_KEY']
+SOCIAL_AUTH_VK_OAUTH2_SECRET = VK['SOCIAL_AUTH_VK_OAUTH2_SECRET']
+
+SOCIAL_AUTH_URL_NAMESPACE = 'social'
+
+
