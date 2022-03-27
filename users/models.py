@@ -11,7 +11,7 @@ class User(AbstractUser):
     GENDER_CHOICES = (('M', 'Male'), ('F', 'Female'),)
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES)
     age = models.PositiveIntegerField(verbose_name='возраст', default=18)  # для ВК
-
+    email = models.EmailField(max_length=128, blank=True)
     activation_key = models.CharField(max_length=128, blank=True)
     activation_key_expires = models.DateTimeField(default=(now() + timedelta(hours=48)))
 
