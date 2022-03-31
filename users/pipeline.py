@@ -4,7 +4,7 @@ from urllib.parse import urlencode, urlunparse
 import requests
 from django.utils import timezone
 from social_core.exceptions import AuthForbidden
-from users.models import ShopUserProfile
+from users.models import ShopUserProfile, User
 
 
 def save_user_profile(backend, user, response, *args, **kwargs):
@@ -18,13 +18,15 @@ def save_user_profile(backend, user, response, *args, **kwargs):
         return
     data = resp.json()['response'][0]
     if data['sex']:
-        user.shopuserprofile.gender = ShopUserProfile.MALE if data['sex'] == 2 else ShopUserProfile.FEMALE
+        user.shopuserprofile.gender = ShopUserProfile.FAT if data['sex'] == 2 else ShopUserProfile.SLIM
     if data['about']:
         user.shopuserprofile.aboutMe = data['about']
     if data['bdate']:
         bdate = datetime.strptime(data['bdate'], '%d.%m.%Y').date()
-    age = timezone.now().date().year - bdate.year
+        age = timezone.now().date().year - bdate.year
+        user.age = age
+    print(age)
     if age < 18:
         user.delete()
-    raise AuthForbidden('social_core.backends.vk.VKOAuth2')
+        raise AuthForbidden('social_core.backends.vk.VKOAuth2')
     user.save()
