@@ -27,6 +27,7 @@ urlpatterns = [
     path('users/', include('users.urls', namespace='users')),
     path('baskets/', include('baskets.urls', namespace='baskets')),
     path('admin-staff/', include('admins.urls', namespace='admin_staff')),
+    path('orders/', include('orders.urls', namespace='orders')),
 
     path('', include('social_django.urls', namespace='social')), # роуты для авторизации через ВК, почему-то
     # дублируется путь со второй строкой path('', index, name='index')?
