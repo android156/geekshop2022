@@ -2,8 +2,21 @@ from django.shortcuts import render, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.template.loader import render_to_string
 from django.http import JsonResponse
+from django.urls import reverse_lazy
+from django.views.generic.edit import CreateView
+from django.views.generic.list import ListView
+
 from baskets.models import Basket
 from products.models import Product
+
+# пробуем переписать на классах, выдать все заказы получилось
+class BasketListView(ListView):
+    model = Basket
+    template_name = 'baskets/basket_class_template.html'
+
+# тут пока фиаско
+class BasketCreateView(CreateView):
+    model = Basket
 
 
 @login_required
@@ -41,3 +54,5 @@ def basket_edit(request, id, quantity):
         context = {'baskets': baskets}
         result = render_to_string('baskets/basket.html', context)
         return JsonResponse({'result': result})
+
+
