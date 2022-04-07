@@ -1,6 +1,6 @@
 from django.urls import path
 
-from orders.views import OrderList, OrderItemsCreate, OrderItemsUpdate
+from orders.views import OrderList, OrderItemsCreate, OrderItemsUpdate, OrderRead, OrderDelete, order_forming_complete
 
 app_name = 'orders'
 
