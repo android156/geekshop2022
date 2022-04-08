@@ -7,6 +7,8 @@ from django.urls import reverse
 from baskets.models import Basket
 from users.forms import UserLoginForm, UserRegistrationForm, UserProfileForm
 from users.models import User
+from django.db import transaction
+from users.forms import ShopUserProfileEditForm
 
 # Create your views here.
 
@@ -74,7 +76,7 @@ def verify(request, email, activation_key):
         if user.activation_key == activation_key and not user.is_activation_key_expired():
             user.is_active = True
             user.save()
-            auth.login(request, user)
+            auth.login(request, user, backend='django.contrib.auth.backends.ModelBackend')
             return render(request, 'users/email_verification.html')
         else:
             print(f'error activation user: {user}')
@@ -106,3 +108,21 @@ def profile(request):
     return render(request, 'users/profile.html', context)
 
 
+@transaction.atomic
+def edit(request):
+    title = 'редактирование'
+    if request.method == 'POST':
+        edit_form = UserProfileForm(request.POST, request.FILES, instance=request.user)
+        profile_form = ShopUserProfileEditForm(request.POST, instance=request.user.shopuserprofile)
+        if edit_form.is_valid() and profile_form.is_valid():
+            edit_form.save()
+            return HttpResponseRedirect(reverse('auth:edit'))
+    else:
+        edit_form = UserProfileForm(instance=request.user)
+        profile_form = ShopUserProfileEditForm(instance=request.user.shopuserprofile)
+    context = {
+        'title': title,
+        'edit_form': edit_form,
+        'profile_form': profile_form
+    }
+    return render(request, 'users/edit.html', context)
