@@ -24,9 +24,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-o&bdi-!=6dcd_tm&(+-n92!#-j4p3of=ogwfrz$9mkx3u4zcja'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# For local testing:
+# DEBUG = True
+# ALLOWED_HOSTS = ['127.0.0.1']
 
+
+# For working server on Internet:
+DEBUG = False
 ALLOWED_HOSTS = ['127.0.0.1']
+
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -85,10 +92,18 @@ WSGI_APPLICATION = 'geekshop.wsgi.application'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 DATABASES = {
+    # SQLlite DB settings
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': BASE_DIR / 'db.sqlite3',
+    # }
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'NAME': 'geekshop_postgresql',
+    'ENGINE': 'django.db.backends.postgresql',
+    'USER': 'django',
+    'PASSWORD': 'geekbrains',
+    'HOST': 'localhost'
+    },
 }
 
 # Password validation
