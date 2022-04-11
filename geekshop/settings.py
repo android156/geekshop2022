@@ -31,7 +31,6 @@ SECRET_KEY = 'django-insecure-o&bdi-!=6dcd_tm&(+-n92!#-j4p3of=ogwfrz$9mkx3u4zcja
 
 # For working server on Internet:
 DEBUG = False
-ALLOWED_HOSTS = ['127.0.0.1']
 
 ALLOWED_HOSTS = ['*']
 
