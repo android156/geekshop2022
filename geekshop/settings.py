@@ -31,8 +31,8 @@ SECRET_KEY = 'django-insecure-o&bdi-!=6dcd_tm&(+-n92!#-j4p3of=ogwfrz$9mkx3u4zcja
 
 # For working server on Internet:
 DEBUG = False
-
 ALLOWED_HOSTS = ['*']
+
 
 # Application definition
 
@@ -89,21 +89,26 @@ WSGI_APPLICATION = 'geekshop.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
+if DEBUG:
+    DATABASES = {
+        # SQLlite DB settings
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
 
-DATABASES = {
-    # SQLlite DB settings
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.sqlite3',
-    #     'NAME': BASE_DIR / 'db.sqlite3',
-    # }
-    'default': {
-    'NAME': 'geekshop_postgresql',
-    'ENGINE': 'django.db.backends.postgresql',
-    'USER': 'django',
-    'PASSWORD': 'geekbrains',
-    'HOST': 'localhost'
-    },
-}
+    }
+else:
+    DATABASES = {
+        # Postgresql DB settings
+        'default': {
+            'NAME': 'geekshop',
+            'ENGINE': 'django.db.backends.postgresql',
+            'USER': 'django',
+            'PASSWORD': 'geekbrains',
+            'HOST': 'localhost'
+        },
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
