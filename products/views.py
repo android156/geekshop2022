@@ -22,7 +22,7 @@ def products(request, category_id=None, page=1):
         products = Product.objects.filter(category_id=category_id)
     else:
         products = Product.objects.all()
-    paginator = Paginator(products, 3)
+    paginator = Paginator(products, 6)
     try:
         products_paginator = paginator.page(page)
     except PageNotAnInteger:

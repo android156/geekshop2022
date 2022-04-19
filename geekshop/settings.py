@@ -60,6 +60,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
+    'geekshop.settings.DisableCSRF', #  Для отключения CSRF токенов при включенном дебаге
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -94,6 +95,12 @@ if DEBUG:
         'debug_toolbar.panels.profiling.ProfilingPanel',
         'template_profiler_panel.panels.template.TemplateProfilerPanel',
     ]
+    from django.utils.deprecation import MiddlewareMixin
+
+
+    class DisableCSRF(MiddlewareMixin):
+        def process_request(self, request):
+            setattr(request, '_dont_enforce_csrf_checks', True)
 
 ROOT_URLCONF = 'geekshop.urls'
 
