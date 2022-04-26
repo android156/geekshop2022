@@ -30,6 +30,5 @@ class Basket(models.Model):
         baskets = self.basket_items
         return sum(basket.sum() for basket in baskets)
 
-    @cached_property
     def get_items(current_user):
         return Basket.objects.filter(user=current_user).select_related('user')
