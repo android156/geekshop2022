@@ -65,7 +65,7 @@ class OrderItemsCreate(CreateView):
                 orderitems.save()
 
         # удаляем пустой заказ
-        if self.object.get_total_cost() == 0:
+        if self.object.get_total_cost == 0:
             self.object.delete()
         return super(OrderItemsCreate, self).form_valid(form)
 
@@ -76,7 +76,7 @@ class OrderItemsUpdate(UpdateView):
     success_url = reverse_lazy('orders:index')
 
     def get_context_data(self, **kwargs):
-        data = super(OrderItemsCreate, self).get_context_data(**kwargs)
+        data = super(OrderItemsUpdate, self).get_context_data(**kwargs)
         OrderFormSet = inlineformset_factory(Order, OrderItem, form=OrderItemForm, extra=1)  # хрен знает, что это,
         # искать инфу по inlineformset_factory
 
@@ -95,9 +95,9 @@ class OrderItemsUpdate(UpdateView):
                 orderitems.instance = self.object
                 orderitems.save()
         # удаляем пустой заказ
-        if self.object.get_total_cost() == 0:
+        if self.object.get_total_cost == 0:
             self.object.delete()
-        return super(OrderItemsCreate, self).form_valid(form)
+        return super(OrderItemsUpdate, self).form_valid(form)
 
 
 class OrderDelete(DeleteView):

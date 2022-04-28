@@ -7,6 +7,7 @@
     <div class="basket_list">
         {% for item in object.orderitems.select_related %}
             <div class="basket_record">
+
                 <img src="{{ item.product.image.url }}"
                 alt="{{ item.product.description }}"
                 width="10%">
@@ -23,6 +24,7 @@
                 <span class="product_cost">
                     = {{ item.get_product_cost }}&nbspруб
                 </span>
+
             </div>
         {% endfor %}
     </div>

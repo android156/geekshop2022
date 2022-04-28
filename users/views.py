@@ -103,7 +103,8 @@ def profile(request):
     context = {
         'title': 'GeekShop - Профиль пользователя',
         'form': form,
-        'baskets': Basket.objects.filter(user=current_user),
+        'baskets': Basket.objects.filter(user=current_user).select_related(
+            'product', 'user').order_by('product__category'),
     }
     return render(request, 'users/profile.html', context)
 

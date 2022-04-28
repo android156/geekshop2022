@@ -24,15 +24,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-o&bdi-!=6dcd_tm&(+-n92!#-j4p3of=ogwfrz$9mkx3u4zcja'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# For local testing:
-# DEBUG = True
-# ALLOWED_HOSTS = ['127.0.0.1']
+DEBUG = True
 
-
-# For working server on Internet:
-DEBUG = False
-
-ALLOWED_HOSTS = ['*']
+if DEBUG:
+    # For local testing:
+    ALLOWED_HOSTS = ['127.0.0.1']
+else:
+    # For working server on Internet:
+    ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -45,6 +44,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'social_django',  # Для социалки
 
+    'debug_toolbar',  # Профилирование и отладка
+    'template_profiler_panel',  # Профилирование и отладка
+    'django_extensions',  # Профилирование и отладка
+
+
     'products',
     'users',
     'baskets',
@@ -56,13 +60,47 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
+    'geekshop.settings.DisableCSRF', #  Для отключения CSRF токенов при включенном дебаге
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
-    'social_django.middleware.SocialAuthExceptionMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',  # Профилирование и отладка
+
+    'social_django.middleware.SocialAuthExceptionMiddleware',  # Для социалки
 ]
+
+if DEBUG:
+    def show_toolbar(request):
+        return True
+
+
+    DEBUG_TOOLBAR_CONFIG = {
+        'SHOW_TOOLBAR_CALLBACK': show_toolbar,
+    }
+    DEBUG_TOOLBAR_PANELS = [
+        'debug_toolbar.panels.versions.VersionsPanel',
+        'debug_toolbar.panels.timer.TimerPanel',
+        'debug_toolbar.panels.settings.SettingsPanel',
+        'debug_toolbar.panels.headers.HeadersPanel',
+        'debug_toolbar.panels.request.RequestPanel',
+        'debug_toolbar.panels.sql.SQLPanel',
+        'debug_toolbar.panels.templates.TemplatesPanel',
+        'debug_toolbar.panels.staticfiles.StaticFilesPanel',
+        'debug_toolbar.panels.cache.CachePanel',
+        'debug_toolbar.panels.signals.SignalsPanel',
+        'debug_toolbar.panels.logging.LoggingPanel',
+        'debug_toolbar.panels.redirects.RedirectsPanel',
+        'debug_toolbar.panels.profiling.ProfilingPanel',
+        'template_profiler_panel.panels.template.TemplateProfilerPanel',
+    ]
+    from django.utils.deprecation import MiddlewareMixin
+
+
+    class DisableCSRF(MiddlewareMixin):
+        def process_request(self, request):
+            setattr(request, '_dont_enforce_csrf_checks', True)
 
 ROOT_URLCONF = 'geekshop.urls'
 
@@ -89,21 +127,26 @@ WSGI_APPLICATION = 'geekshop.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
+if DEBUG:
+    DATABASES = {
+        # SQLlite DB settings
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
 
-DATABASES = {
-    # SQLlite DB settings
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.sqlite3',
-    #     'NAME': BASE_DIR / 'db.sqlite3',
-    # }
-    'default': {
-    'NAME': 'geekshop_postgresql',
-    'ENGINE': 'django.db.backends.postgresql',
-    'USER': 'django',
-    'PASSWORD': 'geekbrains',
-    'HOST': 'localhost'
-    },
-}
+    }
+else:
+    DATABASES = {
+        # Postgresql DB settings
+        'default': {
+            'NAME': 'geekshop',
+            'ENGINE': 'django.db.backends.postgresql',
+            'USER': 'django',
+            'PASSWORD': 'geekbrains',
+            'HOST': 'localhost'
+        },
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -185,7 +228,6 @@ SOCIAL_AUTH_URL_NAMESPACE = 'social'
 
 LOGIN_ERROR_URL = '/'
 
-
 SOCIAL_AUTH_PIPELINE = (
     'social_core.pipeline.social_auth.social_details',
     'social_core.pipeline.social_auth.social_uid',
@@ -197,7 +239,3 @@ SOCIAL_AUTH_PIPELINE = (
     'social_core.pipeline.social_auth.load_extra_data',
     'social_core.pipeline.user.user_details',
 )
-
-
-
-

@@ -30,23 +30,35 @@ class Order(models.Model):
         verbose_name_plural = 'заказы'
 
     def __str__(self):
-        return 'Текущий заказ: {}'.format(self.id)
+        return f'Текущий заказ: {self.pk}'
 
+    @property
     def get_total_quantity(self):
-        items = self.orderitems.select_related()
+        items = self.orderitems.select_related('product', 'product__category')
         return sum(list(map(lambda x: x.quantity, items)))
 
+    @property
     def get_product_type_quantity(self):
-        items = self.orderitems.select_related()
+        items = self.orderitems.select_related('product', 'product__category')
         return len(items)
 
+    @property
     def get_total_cost(self):
-        items = self.orderitems.select_related()
+        items = self.orderitems.select_related('product', 'product__category')
         return sum(list(map(lambda x: x.quantity * x.product.price, items)))
+
+    @property
+    def summary(self):
+        items = self.orderitems.select_related('product', 'product__category')
+        return {
+            'total_cost': sum(list(map(lambda x: x.quantity * x.product.price, items))),
+            'product_type_quantity': len(items),
+            'total_quantity': sum(list(map(lambda x: x.quantity, items)))
+        }
 
     # переопределяем метод, удаляющий объект
     def delete(self):
-        for item in self.orderitems.select_related():
+        for item in self.orderitems.select_related('product','product__category'):
             item.product.quantity += item.quantity
             item.product.save()
             self.is_active = False
